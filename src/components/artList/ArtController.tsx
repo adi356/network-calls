@@ -25,9 +25,12 @@ interface Artwork {
 
 export const ArtController = () => {
     const [ artworks, setArtworks ] = useState<Artwork[]>([])
+    const [ offlineMessage, setOfflineMessage ] = useState<boolean>(false)
 
     //actual call to the Chicago Art API
     const fetchArtwork = async () => {
+        setOfflineMessage(false)
+        try {
         const result = await axios.get('https://api.artic.edu/api/v1/artworks?fields=id,title,thumbnail,artist_display')
         const { data } = result
         const artList: ArtworkFromApi[] = data.data
@@ -48,6 +51,10 @@ export const ArtController = () => {
         console.log(artwork)
 
         setArtworks(artwork)
+    } catch (e) {
+        setOfflineMessage(true)
+        setArtworks([])
+    }
     }
     
     useEffect(() => {
@@ -57,6 +64,11 @@ export const ArtController = () => {
     return (
         <div>
             This is where art goes
+            <button onClick={fetchArtwork}>Reload</button>
+            {
+                offlineMessage ? (<div>You are offline</div>) : null
+            }
+
             {
                 artworks.map(art => {
                     return (

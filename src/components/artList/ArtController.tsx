@@ -1,5 +1,5 @@
 import { ArtView } from "./ArtView"
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 
 //CONTAINS LOGIC FOR ARTVIEW
@@ -28,7 +28,7 @@ export const ArtController = () => {
     const [ offlineMessage, setOfflineMessage ] = useState<boolean>(false)
 
     //actual call to the Chicago Art API
-    const fetchArtwork = async () => {
+    const fetchArtwork = useCallback( async () => {
         setOfflineMessage(false)
         try {
         const result = await axios.get('https://api.artic.edu/api/v1/artworks?fields=id,title,thumbnail,artist_display')
@@ -55,11 +55,12 @@ export const ArtController = () => {
         setOfflineMessage(true)
         setArtworks([])
     }
-    }
+    }, [])
     
     useEffect(() => {
+        //console.log('RUNNING USE EFFECT')
         fetchArtwork()
-    }, [])
+    }, [ fetchArtwork ])
 
     return (
         <div>

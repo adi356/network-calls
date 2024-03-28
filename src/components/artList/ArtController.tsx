@@ -1,6 +1,7 @@
 import { ArtView } from "./ArtView"
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import { useArtworkList } from "../../context/ArtworkContext"
 
 //CONTAINS LOGIC FOR ARTVIEW
 
@@ -24,54 +25,53 @@ interface Artwork {
 }
 
 export const ArtController = () => {
+    const { artwork, fetchArtwork } = useArtworkList()
+    
     const [ artworks, setArtworks ] = useState<Artwork[]>([])
-    const [ offlineMessage, setOfflineMessage ] = useState<boolean>(false)
+    //const [ offlineMessage, setOfflineMessage ] = useState<boolean>(false)
 
     //actual call to the Chicago Art API
-    const fetchArtwork = useCallback( async () => {
-        setOfflineMessage(false)
-        try {
-        const result = await axios.get('https://api.artic.edu/api/v1/artworks?fields=id,title,thumbnail,artist_display')
-        const { data } = result
-        const artList: ArtworkFromApi[] = data.data
+    // const fetchArtwork = useCallback( async () => {
+    //     setOfflineMessage(false)
+    //     try {
+    //     const result = await axios.get('https://api.artic.edu/api/v1/artworks?fields=id,title,thumbnail,artist_display')
+    //     const { data } = result
+    //     const artList: ArtworkFromApi[] = data.data
 
-        //converting from ArtworkFromApi to Artwork type
-        const artwork: Artwork[] = artList.map(art => {
-            const convertedArtwork: Artwork = {
-                id: `${art.id}`,
-                title: art.title,
-                base64: art.thumbnail.lqip,
-                artist: art.artist_display.split('\n')[0],
-                description: art.thumbnail.alt_text
-            }
+    //     //converting from ArtworkFromApi to Artwork type
+    //     const artwork: Artwork[] = artList.map(art => {
+    //         const convertedArtwork: Artwork = {
+    //             id: `${art.id}`,
+    //             title: art.title,
+    //             base64: art.thumbnail.lqip,
+    //             artist: art.artist_display.split('\n')[0],
+    //             description: art.thumbnail.alt_text
+    //         }
 
-            return convertedArtwork
-        })
+    //         return convertedArtwork
+    //     })
 
-        console.log(artwork)
+    //     console.log(artwork)
 
-        setArtworks(artwork)
-    } catch (e) {
-        setOfflineMessage(true)
-        setArtworks([])
-    }
-    }, [])
+    //     setArtworks(artwork)
+    // } catch (e) {
+    //     setOfflineMessage(true)
+    //     setArtworks([])
+    // }
+    // }, [])
     
-    useEffect(() => {
-        //console.log('RUNNING USE EFFECT')
-        fetchArtwork()
-    }, [ fetchArtwork ])
+    // useEffect(() => {
+    //     //console.log('RUNNING USE EFFECT')
+    //     fetchArtwork()
+    // }, [ fetchArtwork ])
 
     return (
         <div>
             This is where art goes
             <button onClick={fetchArtwork}>Reload</button>
-            {
-                offlineMessage ? (<div>You are offline</div>) : null
-            }
 
             {
-                artworks.map(art => {
+                artwork.map(art => {
                     return (
                         <ArtView 
                         key={art.id}    

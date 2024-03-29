@@ -1,3 +1,7 @@
+# Project created for an OA
+This very simple project was created to demonstrate my ability to get information from an api and present it on a webpage.
+With more time I would have made the webpage itself more pretty, but since I only needed to focus on the BE and demonstrate using a get method and displaying the data received it does not follow common FE design standards.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
